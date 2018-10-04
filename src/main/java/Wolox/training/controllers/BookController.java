@@ -14,4 +14,10 @@ public class BookController {
         return "greeting";
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "home";
+    }
+
+
 }

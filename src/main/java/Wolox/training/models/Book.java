@@ -54,4 +54,76 @@ public class Book {
         new Book(null, author, image, title, subtitle, publisher, year, pages, isbn);
     }
 
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getGenre() {
+        return this.genre;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getAuthor() {
+        return this.author;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public String getSubtitle() {
+        return this.subtitle;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getPublisher() {
+        return this.publisher;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getYear() {
+        return this.year;
+    }
+
+    public void setPages(int pages) {
+        this.pages = pages;
+    }
+
+    public int getPages() {
+        return this.pages;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getIsbn() {
+        return this.isbn;
+    }
+
 }
