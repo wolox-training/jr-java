@@ -24,6 +24,9 @@ public class User {
     @ManyToMany
     private Collection<Book> books = new LinkedList<Book>();
 
+    public User() {
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
