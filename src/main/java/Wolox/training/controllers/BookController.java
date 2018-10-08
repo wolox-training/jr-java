@@ -45,14 +45,16 @@ public class BookController {
     }
 
     // Update
-    @PutMapping("/{id}")
-    public Book updateBook(@PathVariable int id) {
-        Book book = bookRepository.findById(id).get();
+    @PutMapping("/books/{id}")
+    public Book updateBook(@RequestBody Book book, @PathVariable int id) {
+        if (!bookRepository.findById(id).isPresent()) {
+            throw new RuntimeException("The book does not exist");
+        }
+        book.setId(id);
         return bookRepository.save(book);
     }
-
+    
     // Delete
-
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
         bookRepository.deleteById(id);
