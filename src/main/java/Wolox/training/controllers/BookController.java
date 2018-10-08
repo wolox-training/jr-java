@@ -39,9 +39,13 @@ public class BookController {
         return bookRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Optional findById(@PathVariable int id) {
-        return bookRepository.findById(id);
+    @GetMapping("/books/{id}")
+    public Book findById(@PathVariable int id) {
+        Optional<Book> book = bookRepository.findById(id);
+        if (!book.isPresent()) {
+            throw new RuntimeException("The book does not exist");
+        }
+        return book.get();
     }
 
     // Update
