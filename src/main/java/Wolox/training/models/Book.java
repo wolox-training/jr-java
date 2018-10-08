@@ -111,5 +111,12 @@ public class Book {
     public String getIsbn() {
         return this.isbn;
     }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public int getId() {
+        return this.id;
+    }
 }
