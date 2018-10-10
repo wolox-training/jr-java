@@ -21,25 +21,26 @@ public class BookController {
         return "greeting";
     }
 
-    @GetMapping("/")
+    @GetMapping(value = {"/", ""})
     public String home() {
         return "home";
     }
 
     // Create
-    @PostMapping
+    @RequestMapping("/create")
+    @PostMapping("/books/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
-        return (Book)bookRepository.save(book);
+        return bookRepository.save(book);
     }
 
     // Read
-    @GetMapping
+    @GetMapping("/view")
     public Iterable findAll() {
         return bookRepository.findAll();
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/view/{id}")
     public Book findById(@PathVariable int id) {
         Optional<Book> book = bookRepository.findById(id);
         if (!book.isPresent()) {
@@ -48,16 +49,70 @@ public class BookController {
         return book.get();
     }
 
-    // Update
-    @PutMapping("/books/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable int id) {
-        if (!bookRepository.findById(id).isPresent()) {
-            throw new RuntimeException("The book does not exist");
-        }
-        book.setId(id);
+    // Update methods
+    @PutMapping("/view/setAuthor/{id}")
+    public Book updateAuthor(@RequestParam (name = "author") String author, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setAuthor(author);
         return bookRepository.save(book);
     }
-    
+
+    @PutMapping("/view/setGenre/{id}")
+    public Book updateGenre(@RequestParam (name = "genre") String genre, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setGenre(genre);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setImage/{id}")
+    public Book updateImage(@RequestParam (name = "image") String image, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setImage(image);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setIsbn/{id}")
+    public Book updateIsbn(@RequestParam (name = "isbn") String isbn, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setIsbn(isbn);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setPages/{id}")
+    public Book updatePages(@RequestParam (name = "pages") int pages, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setPages(pages);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setPublisher/{id}")
+    public Book updatePublisher(@RequestParam (name = "publisher") String publisher, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setPublisher(publisher);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setSubtitle/{id}")
+    public Book updateSubtitle(@RequestParam (name = "subtitle") String subtitle, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setSubtitle(subtitle);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setTitle/{id}")
+    public Book updateTitle(@RequestParam (name = "title") String title, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setTitle(title);
+        return bookRepository.save(book);
+    }
+
+    @PutMapping("/view/setYear/{id}")
+    public Book updateYear(@RequestParam (name = "year") String year, @PathVariable int id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+        book.setYear(year);
+        return bookRepository.save(book);
+    }
+
     // Delete
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
