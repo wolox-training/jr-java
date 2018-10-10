@@ -67,8 +67,11 @@ public class UserController {
     }
 
     @PutMapping("/addBook/{id}")
-    public void addBookToLibrary(@PathVariable int id, @RequestBody Book book) {
+    public void addBookToLibrary(@PathVariable int id, @RequestBody Book book) throws BookAlreadyOwnedException {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("The user does not exist"));
+        if (user.hasBook(book)) {
+            throw new BookAlreadyOwnedException("The user already has this book in their library");
+        }
         user.addBookToLibrary(book);
         userRepository.save(user);
     }
