@@ -42,11 +42,7 @@ public class BookController {
 
     @GetMapping("/view/{id}")
     public Book findById(@PathVariable int id) {
-        Optional<Book> book = bookRepository.findById(id);
-        if (!book.isPresent()) {
-            throw new RuntimeException("The book does not exist");
-        }
-        return book.get();
+        return bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
     }
 
     // Update methods
