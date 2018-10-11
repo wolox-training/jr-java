@@ -1,19 +1,28 @@
 package Wolox.training.controllers;
 
-import java.util.Optional;
+import Wolox.training.DAO.BookDAO;
 import Wolox.training.models.Book;
 import Wolox.training.repositories.BookRepository;
+import Wolox.training.services.OpenLibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import javax.xml.ws.Response;
+import java.time.LocalDate;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+//@Controller
+@RequestMapping("/api/books")
+@RestController
 public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
+
+    private OpenLibraryService onlineLibrary = new OpenLibraryService();
 
     @GetMapping("/greeting")
     public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
@@ -30,7 +39,7 @@ public class BookController {
     @RequestMapping("/create")
     @PostMapping("/books/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Book create(@RequestBody Book book) {
+    public Book create(@RequestBody Book book ) {
         return bookRepository.save(book);
     }
 
@@ -43,6 +52,35 @@ public class BookController {
     @GetMapping("/view/{id}")
     public Book findById(@PathVariable int id) {
         return bookRepository.findById(id).orElseThrow(() -> new RuntimeException("The book does not exist"));
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Optional<Book> notFound() {
+        return Optional.empty();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/view/{isbn}")
+    public Optional<Book> findByIsbn(@PathVariable String isbn) {
+        Book book;
+        try {
+            book = bookRepository.findByIsbn(isbn).get();
+            return Optional.of(this.findById(book.getId()));
+        } catch (NoSuchElementException notPresentInDatabaseEx) {
+            try {
+                BookDAO bookDAO = onlineLibrary.bookInfo(isbn);
+                book = new Book();
+                book.setTitle(bookDAO.getTitle());
+                book.setSubtitle(bookDAO.getSubtitle());
+                //book.setAuthor(bookDAO.getAuthors());
+                book.setPublisher(bookDAO.getPublishers());
+                book.setIsbn(isbn);
+                book.setYear(bookDAO.getPublishDate());
+                return Optional.of(this.create(book));
+            } catch (RuntimeException notPresentInOnlineServiceEx) {
+                return this.notFound();
+            }
+        }
     }
 
     // Update methods
@@ -110,9 +148,8 @@ public class BookController {
     }
 
     // Delete
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/view/{id}")
     public void delete(@PathVariable int id) {
         bookRepository.deleteById(id);
     }
-
 }
