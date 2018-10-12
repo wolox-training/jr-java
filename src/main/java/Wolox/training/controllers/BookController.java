@@ -4,11 +4,15 @@ import Wolox.training.DAO.BookDAO;
 import Wolox.training.models.Book;
 import Wolox.training.repositories.BookRepository;
 import Wolox.training.services.OpenLibraryService;
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
@@ -55,30 +59,47 @@ public class BookController {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Optional<Book> notFound() {
-        return Optional.empty();
+    public Book notFound() {
+        return null;
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/view/{isbn}")
-    public Optional<Book> findByIsbn(@PathVariable String isbn) {
-        Book book;
+    @GetMapping
+    public Book findLocalByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn).orElseThrow(() -> new NoSuchElementException());
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public Book findInOnlineLibrary(String isbn) {
         try {
-            book = bookRepository.findByIsbn(isbn).get();
-            return Optional.of(this.findById(book.getId()));
-        } catch (NoSuchElementException notPresentInDatabaseEx) {
+            BookDAO bookDAO = onlineLibrary.bookInfo(isbn);
+            Book book = new Book();
+            book.setTitle(bookDAO.getTitle());
+            book.setSubtitle(bookDAO.getSubtitle());
+            book.setPublisher(bookDAO.getPublishers());
+            book.setIsbn(isbn);
+            book.setYear(bookDAO.getPublishDate());
+            book.setAuthor(bookDAO.getAuthors().stream().findFirst().get());
+            book.setImage(bookDAO.getCover());
+            return this.create(book);
+        } catch (RuntimeException e) {
+            throw new NoSuchElementException();
+        }
+    }
+
+    @RequestMapping(value = "/view/isbn/{isbn}", method = { RequestMethod.GET, RequestMethod.POST })
+    public Book findByIsbn(HttpServletResponse response, @PathVariable String isbn) {
+        try {
+            response.setStatus(200);
+            return findLocalByIsbn(isbn);
+        } catch (NoSuchElementException notInLocalLib) {
             try {
-                BookDAO bookDAO = onlineLibrary.bookInfo(isbn);
-                book = new Book();
-                book.setTitle(bookDAO.getTitle());
-                book.setSubtitle(bookDAO.getSubtitle());
-                //book.setAuthor(bookDAO.getAuthors());
-                book.setPublisher(bookDAO.getPublishers());
-                book.setIsbn(isbn);
-                book.setYear(bookDAO.getPublishDate());
-                return Optional.of(this.create(book));
-            } catch (RuntimeException notPresentInOnlineServiceEx) {
-                return this.notFound();
+                response.setStatus(201);
+                return findInOnlineLibrary(isbn);
+            } catch (NoSuchElementException notInOnlineLib) {
+                response.setStatus(404);
+                return notFound();
             }
         }
     }

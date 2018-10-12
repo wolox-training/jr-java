@@ -10,19 +10,21 @@ public class BookDAO {
     private String subtitle;
     private String publishers;
     private String publishDate;
+    private String cover;
     private int pages;
     private ArrayList<String> authors = new ArrayList<String>();
 
     public BookDAO() {
     }
 
-    public BookDAO(String isbn, String title, String subtitle, String publishers, String publishDate, int pages) {
+    public BookDAO(String isbn, String title, String subtitle, String publishers, String publishDate, int pages, String cover) {
         this.isbn = isbn;
         this.title = title;
         this.subtitle = subtitle;
         this.publishers = publishers;
         this.publishDate = publishDate;
         this.pages = pages;
+        this.cover = cover;
     }
 
     public void addAuthor(String author) {
@@ -85,4 +87,11 @@ public class BookDAO {
         this.authors = authors;
     }
 
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
 }

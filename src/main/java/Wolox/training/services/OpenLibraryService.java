@@ -19,6 +19,7 @@ public class OpenLibraryService {
     private String publishDateTag = "publish_date";
     private String pagesTag = "number_of_pages";
     private String authorsTag = "authors";
+    private String coverTag = "cover";
     private String requestLink = "https://openlibrary.org/api/books?bibkeys=ISBN:<ISBN>&format=json&jscmd=data";
     private JSONObject onlineServiceBookInfo;
 
@@ -63,6 +64,15 @@ public class OpenLibraryService {
         return returnVal;
     }
 
+    private String parseCover(String isbn) {
+        String returnVal = "";
+        try {
+            returnVal = onlineServiceBookInfo.getJSONObject("ISBN:" + isbn).getJSONArray(coverTag).getJSONObject(0).getString("large");
+        } catch (JSONException e) {
+        }
+        return returnVal;
+    }
+
     public BookDAO bookInfo(String isbn) {
         connectToServer(isbn);
         if (onlineServiceBookInfo.length() == 0) {
@@ -70,10 +80,9 @@ public class OpenLibraryService {
         }
         String title = parseString(titleTag, isbn), subtitle = parseString(subtitleTag, isbn),
                 publishers = parseArray(publishersTag, isbn), publishDate = parseString(publishDateTag, isbn),
-                authors = parseArray(authorsTag, isbn);
+                authors = parseArray(authorsTag, isbn), cover = parseCover(isbn);
         int pages = Integer.parseInt(parseString(pagesTag, isbn));
-        BookDAO bookDAO = new BookDAO(isbn, title, subtitle, publishers, publishDate, pages);
-        //authors.forEach((author) -> bookDAO.addAuthor(author));
+        BookDAO bookDAO = new BookDAO(isbn, title, subtitle, publishers, publishDate, pages, cover);
         bookDAO.addAuthor(authors);
         return bookDAO;
     }
