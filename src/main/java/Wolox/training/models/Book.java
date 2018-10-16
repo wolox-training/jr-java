@@ -11,31 +11,31 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "genre")
+    @Column
     private String genre;
 
-    @Column(name = "author", nullable = false)
+    @Column(nullable = false)
     private String author;
 
-    @Column(name = "image", nullable = false)
+    @Column(nullable = false)
     private String image;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "subtitle", nullable = false)
+    @Column(nullable = false)
     private String subtitle;
 
-    @Column(name = "publisher", nullable = false)
+    @Column(nullable = false)
     private String publisher;
 
-    @Column(name = "year", nullable = false)
+    @Column(nullable = false)
     private String year;
 
-    @Column(name = "pages", nullable = false)
+    @Column(nullable = false)
     private int pages;
 
-    @Column(name = "isbn", nullable = false)
+    @Column(nullable = false)
     private String isbn;
 
     public Book() {
