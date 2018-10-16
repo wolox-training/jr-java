@@ -13,16 +13,16 @@ public class User {
     @GeneratedValue (strategy = GenerationType.AUTO)
     private int id;
 
-    @Column
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Column
+    @Column(name = "books")
     @ManyToMany(cascade = {CascadeType.ALL})
     private Collection<Book> books = new LinkedList<Book>();
 
@@ -68,13 +68,19 @@ public class User {
     public boolean hasBook(Book book) {
         boolean hasBook = false;
         Iterator<Book> it = this.books.iterator();
-        while (!hasBook && it.hasNext()) {
-            Book currentBook = it.next();
-            hasBook = currentBook.getTitle() == book.getTitle() &&
-                      currentBook.getAuthor() == book.getAuthor() &&
-                      currentBook.getPublisher() == book.getPublisher() &&
-                      currentBook.getIsbn() == book.getIsbn();
+        Book currentBook;
+        while (it.hasNext() && !hasBook) {
+            currentBook = it.next();
+            hasBook = (currentBook.getId() == book.getId()) ||
+                    (currentBook.getTitle() == book.getTitle() &&
+                    currentBook.getAuthor() == book.getAuthor() &&
+                    currentBook.getPublisher() == book.getPublisher() &&
+                    currentBook.getIsbn() == book.getIsbn());
         }
         return hasBook;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }
