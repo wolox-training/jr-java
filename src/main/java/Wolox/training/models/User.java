@@ -22,7 +22,7 @@ public class User {
     @Column
     private LocalDate birthday;
 
-    @Column(name = "books")
+    @Column
     @ManyToMany(cascade = {CascadeType.ALL})
     private Collection<Book> books = new LinkedList<Book>();
 
