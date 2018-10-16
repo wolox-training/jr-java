@@ -13,13 +13,13 @@ public class User {
     @GeneratedValue (strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "username", nullable = false)
+    @Column(nullable = false)
     private String username;
 
-    @Column(name = "name")
+    @Column
     private String name;
 
-    @Column(name = "birthday")
+    @Column
     private LocalDate birthday;
 
     @Column(name = "books")
