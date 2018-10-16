@@ -1,25 +1,25 @@
 package Wolox.training.services;
 
 import Wolox.training.DAO.BookDAO;
+import Wolox.training.exceptions.BookDoesNotExistException;
 import org.json.*;
-import org.springframework.boot.jackson.JsonObjectDeserializer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 
 public class OpenLibraryService {
 
-    private String titleTag = "title";
-    private String subtitleTag = "subtitle";
-    private String publishersTag = "publishers";
-    private String publishDateTag = "publish_date";
-    private String pagesTag = "number_of_pages";
-    private String authorsTag = "authors";
-    private String coverTag = "cover";
+    private static final String TITLE_TAG = "title";
+    private static final String SUBTITLE_TAG = "subtitle";
+    private static final String PUBLISHERS_TAG = "publishers";
+    private static final String PUBLISHDATE_TAG = "publish_date";
+    private static final String PAGES_TAG = "number_of_pages";
+    private static final String AUTHORS_TAG = "authors";
+    private static final String COVER_TAG = "cover";
+    private static final String ISBN_TAG = "ISBN: ";
     private String requestLink = "https://openlibrary.org/api/books?bibkeys=ISBN:<ISBN>&format=json&jscmd=data";
     private JSONObject onlineServiceBookInfo;
 
@@ -48,7 +48,7 @@ public class OpenLibraryService {
     private String parseString(String tag, String isbn) {
         String returnVal;
         try {
-            returnVal = onlineServiceBookInfo.getJSONObject("ISBN:" + isbn).getString(tag);
+            returnVal = onlineServiceBookInfo.getJSONObject(ISBN_TAG + isbn).getString(tag);
         } catch (JSONException e) {
             returnVal = "0";
         }
@@ -58,7 +58,7 @@ public class OpenLibraryService {
     private String parseArray(String tag, String isbn) {
         String returnVal = "";
         try {
-            returnVal = onlineServiceBookInfo.getJSONObject("ISBN:" + isbn).getJSONArray(tag).getJSONObject(0).getString("name");
+            returnVal = onlineServiceBookInfo.getJSONObject(ISBN_TAG + isbn).getJSONArray(tag).getJSONObject(0).getString("name");
         } catch (JSONException e) {
         }
         return returnVal;
@@ -67,21 +67,21 @@ public class OpenLibraryService {
     private String parseCover(String isbn) {
         String returnVal = "";
         try {
-            returnVal = onlineServiceBookInfo.getJSONObject("ISBN:" + isbn).getJSONArray(coverTag).getJSONObject(0).getString("large");
+            returnVal = onlineServiceBookInfo.getJSONObject(ISBN_TAG + isbn).getJSONArray(COVER_TAG).getJSONObject(0).getString("large");
         } catch (JSONException e) {
         }
         return returnVal;
     }
 
-    public BookDAO bookInfo(String isbn) {
+    public BookDAO bookInfo(String isbn) throws BookDoesNotExistException {
         connectToServer(isbn);
         if (onlineServiceBookInfo.length() == 0) {
-            throw new RuntimeException("The book does not exist");
+            throw new BookDoesNotExistException("The book does not exist");
         }
-        String title = parseString(titleTag, isbn), subtitle = parseString(subtitleTag, isbn),
-                publishers = parseArray(publishersTag, isbn), publishDate = parseString(publishDateTag, isbn),
-                authors = parseArray(authorsTag, isbn), cover = parseCover(isbn);
-        int pages = Integer.parseInt(parseString(pagesTag, isbn));
+        String title = parseString(TITLE_TAG, isbn), subtitle = parseString(SUBTITLE_TAG, isbn),
+                publishers = parseArray(PUBLISHERS_TAG, isbn), publishDate = parseString(PUBLISHDATE_TAG, isbn),
+                authors = parseArray(AUTHORS_TAG, isbn), cover = parseCover(isbn);
+        int pages = Integer.parseInt(parseString(PAGES_TAG, isbn));
         BookDAO bookDAO = new BookDAO(isbn, title, subtitle, publishers, publishDate, pages, cover);
         bookDAO.addAuthor(authors);
         return bookDAO;

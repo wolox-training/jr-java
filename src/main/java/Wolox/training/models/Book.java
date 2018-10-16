@@ -1,5 +1,7 @@
 package Wolox.training.models;
 
+import Wolox.training.DAO.BookDAO;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,35 +11,45 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column
+    @Column(name = "genre")
     private String genre;
 
-    @Column(nullable = false)
+    @Column(name = "author", nullable = false)
     private String author;
 
-    @Column(nullable = false)
+    @Column(name = "image", nullable = false)
     private String image;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "subtitle", nullable = false)
     private String subtitle;
 
-    @Column(nullable = false)
+    @Column(name = "publisher", nullable = false)
     private String publisher;
 
-    @Column(nullable = false)
+    @Column(name = "year", nullable = false)
     private String year;
 
-    @Column(nullable = false)
+    @Column(name = "pages", nullable = false)
     private int pages;
 
-    @Column(nullable = false)
+    @Column(name = "isbn", nullable = false)
     private String isbn;
 
     public Book() {
 
+    }
+
+    public Book(BookDAO bookDAO) {
+        this.title = bookDAO.getTitle();
+        this.subtitle = bookDAO.getSubtitle();
+        this.publisher = bookDAO.getPublishers();
+        this.isbn = bookDAO.getIsbn();
+        this.year = bookDAO.getPublishDate();
+        this.author = bookDAO.getAuthors().stream().findFirst().get();
+        this.image = bookDAO.getCover();
     }
 
     public void setGenre(String genre) {
@@ -111,12 +123,7 @@ public class Book {
     public String getIsbn() {
         return this.isbn;
     }
-    
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public int getId() {
-        return this.id;
-    }
+    public int getId() { return this.id; }
+
 }
