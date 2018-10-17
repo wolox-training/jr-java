@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class OpenLibraryService {
 
@@ -27,7 +26,6 @@ public class OpenLibraryService {
         try {
             URL url = new URL(requestLink.replace("<ISBN>", isbn));
             try {
-                URLConnection urlConnection = url.openConnection();
                 InputStream stream = url.openStream();
                 int chr;
                 String content = "";

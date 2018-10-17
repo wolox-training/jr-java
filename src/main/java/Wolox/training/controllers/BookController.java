@@ -5,7 +5,6 @@ import Wolox.training.exceptions.BookDoesNotExistException;
 import Wolox.training.models.Book;
 import Wolox.training.repositories.BookRepository;
 import Wolox.training.services.OpenLibraryService;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -52,15 +51,11 @@ public class BookController {
         return bookRepository.findById(id).orElseThrow(() -> new BookDoesNotExistException("The book does not exist"));
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public Book findLocalByIsbn(String isbn) throws BookDoesNotExistException {
+    private Book findLocalByIsbn(String isbn) throws BookDoesNotExistException {
         return bookRepository.findByIsbn(isbn).orElseThrow(() -> new BookDoesNotExistException("The book does not exist"));
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public Book findInOnlineLibrary(String isbn) throws BookDoesNotExistException {
+    private Book findInOnlineLibrary(String isbn) throws BookDoesNotExistException {
         try {
             BookDAO bookDAO = onlineLibrary.bookInfo(isbn);
             Book book = new Book(bookDAO);
