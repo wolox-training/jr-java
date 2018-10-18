@@ -9,6 +9,7 @@ import Wolox.training.repositories.RoleRepository;
 import Wolox.training.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private RoleRepository roleRepository;
 
     public UserController() {
@@ -127,6 +126,11 @@ public class UserController {
         }
         user.setPassword(newPassword);
         return userRepository.save(user);
+    }
+
+    @GetMapping("/currentUser")
+    public String getCurrentlyAuthenticatedUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }
