@@ -128,7 +128,7 @@ public class UserControllerTest {
         mvc.perform(delete("/api/users/delete/1")
                 .contentType(MediaType.APPLICATION_JSON));
         try {
-        mvc.perform(get("/api/users/view/1")
+            mvc.perform(get("/api/users/view/1")
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$", hasSize(0)));
