@@ -1,16 +1,19 @@
 package Wolox.training.models;
 
+import Wolox.training.DAO.UserDAO;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Column(nullable = false)
@@ -23,10 +26,31 @@ public class User {
     private LocalDate birthday;
 
     @Column
+    private String password;
+
+    private boolean enabled;
+    private boolean tokenExpired;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
+
+    @Column
     @ManyToMany(cascade = {CascadeType.ALL})
     private Collection<Book> books = new LinkedList<Book>();
 
     public User() {
+    }
+
+    public User(UserDAO userDAO) {
+        this.username = userDAO.getUsername();
+        this.name = userDAO.getName();
+        this.birthday = userDAO.getBirthday();
     }
 
     public void setUsername(String username) {
@@ -73,9 +97,9 @@ public class User {
             currentBook = it.next();
             hasBook = (currentBook.getId() == book.getId()) ||
                     (currentBook.getTitle() == book.getTitle() &&
-                    currentBook.getAuthor() == book.getAuthor() &&
-                    currentBook.getPublisher() == book.getPublisher() &&
-                    currentBook.getIsbn() == book.getIsbn());
+                            currentBook.getAuthor() == book.getAuthor() &&
+                            currentBook.getPublisher() == book.getPublisher() &&
+                            currentBook.getIsbn() == book.getIsbn());
         }
         return hasBook;
     }
@@ -83,4 +107,36 @@ public class User {
     public int getId() {
         return this.id;
     }
+
+    public void setPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Iterable getRoles() {
+        return this.roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
+    }
+
+//    public void setEnabled(boolean enabled) {
+//        this.enabled = enabled;
+//    }
+//
+//    public boolean isEnabled() {
+//        return this.isEnabled();
+//    }
 }
