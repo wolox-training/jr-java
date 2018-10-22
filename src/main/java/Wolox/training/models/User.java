@@ -26,21 +26,6 @@ public class User {
     private LocalDate birthday;
 
     @Column
-    private String password;
-
-    private boolean enabled;
-    private boolean tokenExpired;
-
-    @ManyToMany
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
-
-    @Column
     @ManyToMany(cascade = {CascadeType.ALL})
     private Collection<Book> books = new LinkedList<Book>();
 
@@ -107,36 +92,4 @@ public class User {
     public int getId() {
         return this.id;
     }
-
-    public void setPassword(String encodedPassword) {
-        this.password = encodedPassword;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Iterable getRoles() {
-        return this.roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
-
-    public void removeRole(Role role) {
-        this.roles.remove(role);
-    }
-
-//    public void setEnabled(boolean enabled) {
-//        this.enabled = enabled;
-//    }
-//
-//    public boolean isEnabled() {
-//        return this.isEnabled();
-//    }
 }
