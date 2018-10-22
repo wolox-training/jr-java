@@ -6,13 +6,10 @@ import Wolox.training.models.Book;
 import Wolox.training.repositories.BookRepository;
 import Wolox.training.services.OpenLibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @RequestMapping("/api/books")
 @RestController
@@ -44,7 +41,7 @@ public class BookController {
 
     // Read
     @GetMapping("/view")
-    public List<Book> findAll() {
+    public Iterable findAll() {
         return bookRepository.findAll();
     }
 
