@@ -20,8 +20,6 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleRepository roleRepository;
 
     public UserController() {
     }
