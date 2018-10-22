@@ -43,8 +43,6 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private int port = 8081;
-
     @MockBean
     private UserRepository userRepository;
 
