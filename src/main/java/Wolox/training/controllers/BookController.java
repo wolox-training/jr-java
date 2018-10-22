@@ -52,15 +52,11 @@ public class BookController {
         return bookRepository.findById(id).orElseThrow(() -> new BookDoesNotExistException("The book does not exist"));
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public Book findLocalByIsbn(String isbn) throws BookDoesNotExistException {
+    private Book findLocalByIsbn(String isbn) throws BookDoesNotExistException {
         return bookRepository.findByIsbn(isbn).orElseThrow(() -> new BookDoesNotExistException("The book does not exist"));
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public Book findInOnlineLibrary(String isbn) throws BookDoesNotExistException {
+    private Book findInOnlineLibrary(String isbn) throws BookDoesNotExistException {
         try {
             BookDAO bookDAO = onlineLibrary.bookInfo(isbn);
             Book book = new Book(bookDAO);

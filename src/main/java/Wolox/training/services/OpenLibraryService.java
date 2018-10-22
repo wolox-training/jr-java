@@ -27,7 +27,6 @@ public class OpenLibraryService {
         try {
             URL url = new URL(requestLink.replace("<ISBN>", isbn));
             try {
-                URLConnection urlConnection = url.openConnection();
                 InputStream stream = url.openStream();
                 int chr;
                 String content = "";
