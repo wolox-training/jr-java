@@ -18,8 +18,6 @@ import java.util.List;
 @RestController
 public class BookController {
 
-    private static final int RESULTS_PER_PAGE = 5;
-
     @Autowired
     private BookRepository bookRepository;
 
@@ -46,8 +44,8 @@ public class BookController {
 
     // Read
     @GetMapping("/view")
-    public List<Book> findAll(@RequestParam (defaultValue = "0") int page, @RequestParam String sortBy) {
-        return bookRepository.findAll(new PageRequest(page, RESULTS_PER_PAGE, Sort.Direction.ASC, sortBy)).getContent();
+    public List<Book> findAll() {
+        return bookRepository.findAll();
     }
 
     @GetMapping("/view/{id}")
@@ -83,16 +81,6 @@ public class BookController {
                 return null;
             }
         }
-    }
-
-    @GetMapping(value = "/view/filter")
-    public List<Book> findByPublisherGenreAndYear(@RequestParam String publisher,
-                                                  @RequestParam String genre,
-                                                  @RequestParam String year,
-                                                  @RequestParam (defaultValue = "0") int page,
-                                                  @RequestParam String sortBy) {
-        return bookRepository.findByPublisherAndGenreAndYearAllIgnoreCase(
-                publisher, genre, year, new PageRequest(page, RESULTS_PER_PAGE, Sort.Direction.ASC, sortBy)).getContent();
     }
 
     // Update methods
