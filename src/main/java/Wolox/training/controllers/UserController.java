@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
@@ -101,7 +100,4 @@ public class UserController {
         user.removeBookFromLibrary(book);
     }
 
-    private boolean usernameExists(String username) {
-        return this.userRepository.findByUsername(username) != null;
-    }
 }
