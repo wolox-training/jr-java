@@ -3,18 +3,16 @@ package Wolox.training.controllers;
 import Wolox.training.DAO.UserDAO;
 import Wolox.training.exceptions.*;
 import Wolox.training.models.Book;
+import Wolox.training.models.Role;
 import Wolox.training.models.User;
-import Wolox.training.repositories.RoleRepository;
 import Wolox.training.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
@@ -22,7 +20,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
     private PasswordEncoder passwordEncoder;
+
     private RoleRepository roleRepository;
 
     public UserController() {
@@ -110,7 +110,7 @@ public class UserController {
         User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException("The user does not exist"));
         user.removeBookFromLibrary(book);
     }
-
+  
     private boolean usernameExists(String username) {
         return this.userRepository.findByUsername(username) != null;
     }
@@ -141,5 +141,4 @@ public class UserController {
     public String getCurrentlyAuthenticatedUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
-
 }

@@ -44,7 +44,6 @@ public class BookTest {
         entityManager.flush();
     }
 
-/*
     @Test
     public void whenFindByAuthor_ReturnBook() {
         // when
@@ -54,7 +53,6 @@ public class BookTest {
         assertThat(found.getAuthor())
                 .isEqualTo(book.getAuthor());
     }
-*/
 
     @Test
     public void whenFindByIsbn_ReturnBook() {

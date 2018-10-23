@@ -17,12 +17,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.NestedServletException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,10 +42,6 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    private int port = 8081;
 
     @MockBean
     private UserRepository userRepository;

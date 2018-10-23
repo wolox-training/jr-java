@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -24,21 +25,6 @@ public class User {
 
     @Column
     private LocalDate birthday;
-
-    @Column
-    private String password;
-
-    private boolean enabled;
-    private boolean tokenExpired;
-
-    @ManyToMany
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
 
     @Column
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -132,11 +118,11 @@ public class User {
         this.roles.remove(role);
     }
 
-//    public void setEnabled(boolean enabled) {
-//        this.enabled = enabled;
-//    }
-//
-//    public boolean isEnabled() {
-//        return this.isEnabled();
-//    }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return this.isEnabled();
+    }
 }
