@@ -5,27 +5,22 @@ import Wolox.training.exceptions.*;
 import Wolox.training.models.Book;
 import Wolox.training.models.Role;
 import Wolox.training.models.User;
-import Wolox.training.repositories.RoleRepository;
 import Wolox.training.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
 public class UserController {
 
-    private static final int RESULTS_PER_PAGE = 5;
-
     @Autowired
     private UserRepository userRepository;
+
     private PasswordEncoder passwordEncoder;
 
     private RoleRepository roleRepository;
@@ -48,24 +43,13 @@ public class UserController {
 
     // Read
     @GetMapping("/view")
-    public List<User> findAll(@RequestParam (defaultValue = "0") int page, @RequestParam String sortBy) {
-        return userRepository.findAll(new PageRequest(page, RESULTS_PER_PAGE, Sort.Direction.ASC, sortBy)).getContent();
+    public Iterable findAll() {
+        return userRepository.findAll();
     }
 
     @GetMapping("/view/{id}")
     public User findById(@PathVariable int id) throws UserDoesNotExistException {
         return userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException("The user does not exist"));
-    }
-
-    @GetMapping(value = "/view/filter")
-    public List<User> findByBirthdayBetweenAndUsernameContaining(@RequestParam String birthday1,
-                                                                 @RequestParam String birthday2,
-                                                                 @RequestParam String username,
-                                                                 @RequestParam (defaultValue = "0") int page,
-                                                                 @RequestParam String sortBy) {
-        return userRepository.findByBirthdayBetweenAndUsernameContainingAllIgnoreCase(
-                    LocalDate.parse(birthday1), LocalDate.parse(birthday2), username, new PageRequest(page,
-                    RESULTS_PER_PAGE, Sort.Direction.ASC, sortBy)).getContent();
     }
 
     @GetMapping("/view/{id}/library")
@@ -117,7 +101,7 @@ public class UserController {
         User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException("The user does not exist"));
         user.removeBookFromLibrary(book);
     }
-
+  
     private boolean usernameExists(String username) {
         return this.userRepository.findByUsername(username) != null;
     }

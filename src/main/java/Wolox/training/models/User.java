@@ -26,21 +26,6 @@ public class User {
     private LocalDate birthday;
 
     @Column
-    private String password;
-
-    private boolean enabled;
-    private boolean tokenExpired;
-
-    @ManyToMany
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
-
-    @Column
     @ManyToMany(cascade = {CascadeType.ALL})
     private Collection<Book> books = new LinkedList<Book>();
 
