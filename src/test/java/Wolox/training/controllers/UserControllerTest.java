@@ -4,20 +4,33 @@ import Wolox.training.exceptions.BookAlreadyOwnedException;
 import Wolox.training.exceptions.UserDoesNotExistException;
 import Wolox.training.models.User;
 import Wolox.training.repositories.UserRepository;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -27,15 +40,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
-@RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
+@RunWith(SpringRunner.class)
 public class UserControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    private int port = 8081;
+
     @MockBean
     private UserRepository userRepository;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
 
     @Test
     public void givenAddedUsers_whenGetUsers_thenReturnFullList() throws Exception {
@@ -114,5 +135,4 @@ public class UserControllerTest {
             throw ex.getCause();
         }
     }
-
 }
