@@ -3,6 +3,7 @@ package Wolox.training.controllers;
 import Wolox.training.DAO.UserDAO;
 import Wolox.training.exceptions.*;
 import Wolox.training.models.Book;
+import Wolox.training.models.Role;
 import Wolox.training.models.User;
 import Wolox.training.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -20,6 +20,10 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    private PasswordEncoder passwordEncoder;
+
+    private RoleRepository roleRepository;
 
     public UserController() {
     }
@@ -97,5 +101,35 @@ public class UserController {
         User user = userRepository.findById(id).orElseThrow(() -> new UserDoesNotExistException("The user does not exist"));
         user.removeBookFromLibrary(book);
     }
+  
+    private boolean usernameExists(String username) {
+        return this.userRepository.findByUsername(username) != null;
+    }
 
+    public User registerNewUserAccount(UserDAO userDAO) throws UserAlreadyExistsException {
+        if (usernameExists(userDAO.getUsername())) {
+            throw new UserAlreadyExistsException("There is an account with that username");
+        }
+        User user = new User(userDAO);
+        user.setPassword(passwordEncoder.encode(userDAO.getPassword()));
+        user.setRoles(Arrays.asList(roleRepository.findByName("USER_ROLE").get()));
+        return userRepository.save(user);
+    }
+
+    @PutMapping("/view/setPassword/{id}")
+    public User changePassword(@RequestParam (name = "newPassword") String newPassword,
+                               @RequestParam (name = "oldPassword") String oldPassword,
+                               @PathVariable int id) throws BookDoesNotExistException, InvalidIdentityException {
+        User user = userRepository.findById(id).orElseThrow(() -> new BookDoesNotExistException("The user does not exist"));
+        if (!oldPassword.equals(user.getPassword())) {
+            throw new InvalidIdentityException("Unable to validate identity for changing password");
+        }
+        user.setPassword(newPassword);
+        return userRepository.save(user);
+    }
+
+    @GetMapping("/currentUser")
+    public String getCurrentlyAuthenticatedUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }
