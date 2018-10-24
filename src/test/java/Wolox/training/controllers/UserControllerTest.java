@@ -4,6 +4,7 @@ import Wolox.training.exceptions.BookAlreadyOwnedException;
 import Wolox.training.exceptions.UserDoesNotExistException;
 import Wolox.training.models.User;
 import Wolox.training.repositories.UserRepository;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,8 +18,12 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.NestedServletException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,8 +45,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 public class UserControllerTest {
 
+    TestRestTemplate restTemplate;
+    URL base;
+
     @Autowired
     private MockMvc mvc;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @MockBean
     private UserRepository userRepository;
@@ -49,6 +58,14 @@ public class UserControllerTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    private ResponseEntity<String> response;
+
+    @Before
+    public void setUp() throws MalformedURLException {
+        restTemplate = new TestRestTemplate("user", passwordEncoder.encode("password"));
+        base = new URL("http://localhost:" + 8081 + "/api/users/");
+        response = restTemplate.getForEntity(base.toString(), String.class);
+    }
 
     @Test
     public void givenAddedUsers_whenGetUsers_thenReturnFullList() throws Exception {
