@@ -50,7 +50,6 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
             user.setUsername("username");
             user.setPassword(passwordEncoder.encode("password"));
             user.setRoles(Arrays.asList(adminRole));
-            user.setEnabled(true);
             userRepository.save(user);
             alreadySetup = true;
         }
