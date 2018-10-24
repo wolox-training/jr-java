@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
@@ -15,9 +16,11 @@ import javax.persistence.PersistenceException;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
+@RunWith(SpringRunner.class)
+@AutoConfigureTestDatabase(replace = NONE)
 public class BookTest {
 
     @Autowired
@@ -48,7 +51,7 @@ public class BookTest {
     @Test
     public void whenFindByAuthor_ReturnBook() {
         // when
-        Book found = bookRepository.findByAuthor(book.getAuthor(), new PageRequest(1, 1, Sort.Direction.ASC)).getContent().get(0);
+        Book found = bookRepository.findByAuthor(book.getAuthor(), new PageRequest(0, 1, Sort.Direction.ASC, "title")).getContent().get(0);
 
         // then
         assertThat(found.getAuthor())
