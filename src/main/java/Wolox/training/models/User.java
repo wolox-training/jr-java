@@ -27,6 +27,21 @@ public class User {
     private LocalDate birthday;
 
     @Column
+    private String password;
+
+    private boolean enabled;
+    private boolean tokenExpired;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
+
+    @Column
     @ManyToMany(cascade = {CascadeType.ALL})
     private Collection<Book> books = new LinkedList<Book>();
 
@@ -39,28 +54,28 @@ public class User {
         this.birthday = userDAO.getBirthday();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return this.username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDate getBirthday() {
         return this.birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
 
     public Collection<Book> getLibrary() {
@@ -94,12 +109,12 @@ public class User {
         return this.id;
     }
 
-    public void setPassword(String encodedPassword) {
-        this.password = encodedPassword;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String encodedPassword) {
+        this.password = encodedPassword;
     }
 
     public Iterable getRoles() {
@@ -118,11 +133,4 @@ public class User {
         this.roles.remove(role);
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isEnabled() {
-        return this.isEnabled();
-    }
 }
