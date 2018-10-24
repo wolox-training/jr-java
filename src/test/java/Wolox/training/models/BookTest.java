@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.PersistenceException;
@@ -47,7 +48,7 @@ public class BookTest {
     @Test
     public void whenFindByAuthor_ReturnBook() {
         // when
-        Book found = bookRepository.findByAuthor(book.getAuthor(), new PageRequest(  )).getContent();
+        Book found = bookRepository.findByAuthor(book.getAuthor(), new PageRequest(1, 1, Sort.Direction.ASC)).getContent().get(0);
 
         // then
         assertThat(found.getAuthor())
