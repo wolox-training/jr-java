@@ -1,10 +1,15 @@
 package Wolox.training.models;
 
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
 public class Privilege {
+
+    private static final String WARNING_EMPTY = "Please provide a non empty field";
+    private static final String WARNING_NULL = "Please provide a non null field";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +29,7 @@ public class Privilege {
     }
 
     public void setId(Long id) {
+        Preconditions.checkNotNull(id, WARNING_NULL);
         this.id = id;
     }
 
@@ -32,6 +38,7 @@ public class Privilege {
     }
 
     public void setName(String name) {
+        Preconditions.checkNotEmpty(name, WARNING_EMPTY);
         this.name = name;
     }
 
