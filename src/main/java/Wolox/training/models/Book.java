@@ -1,11 +1,15 @@
 package Wolox.training.models;
 
 import Wolox.training.DAO.BookDAO;
+import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 import javax.persistence.*;
 
 @Entity
 public class Book {
+
+    private static final String WARNING_EMPTY = "Please provide a non empty field";
+    private static final String WARNING_LOWER_THAN_ZERO = "Please provide a number higher than zero";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,17 +47,17 @@ public class Book {
     }
 
     public Book(BookDAO bookDAO) {
-        this.title = bookDAO.getTitle();
-        this.subtitle = bookDAO.getSubtitle();
-        this.publisher = bookDAO.getPublishers();
-        this.isbn = bookDAO.getIsbn();
-        this.year = bookDAO.getPublishDate();
-        this.author = bookDAO.getAuthors().stream().findFirst().get();
-        this.image = bookDAO.getCover();
+        this.setTitle(bookDAO.getTitle());
+        this.setSubtitle(bookDAO.getSubtitle());
+        this.setPublisher(bookDAO.getPublishers());
+        this.setIsbn(bookDAO.getIsbn());
+        this.setYear(bookDAO.getPublishDate());
+        this.setAuthor(bookDAO.getAuthors().stream().findFirst().get());
+        this.setImage(bookDAO.getCover());
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre = Preconditions.checkNotEmpty(genre, WARNING_EMPTY);
     }
 
     public String getGenre() {
@@ -61,6 +65,7 @@ public class Book {
     }
 
     public void setAuthor(String author) {
+        Preconditions.checkNotEmpty(author, WARNING_EMPTY);
         this.author = author;
     }
 
@@ -69,6 +74,7 @@ public class Book {
     }
 
     public void setImage(String image) {
+        Preconditions.checkNotEmpty(image, WARNING_EMPTY);
         this.image = image;
     }
 
@@ -77,6 +83,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
+        Preconditions.checkNotEmpty(title, WARNING_EMPTY);
         this.title = title;
     }
 
@@ -85,6 +92,7 @@ public class Book {
     }
 
     public void setSubtitle(String subtitle) {
+        Preconditions.checkNotEmpty(subtitle, WARNING_EMPTY);
         this.subtitle = subtitle;
     }
 
@@ -93,6 +101,7 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
+        Preconditions.checkNotEmpty(publisher, WARNING_EMPTY);
         this.publisher = publisher;
     }
 
@@ -101,6 +110,7 @@ public class Book {
     }
 
     public void setYear(String year) {
+        Preconditions.checkNotEmpty(year, WARNING_EMPTY);
         this.year = year;
     }
 
@@ -109,6 +119,7 @@ public class Book {
     }
 
     public void setPages(int pages) {
+        Preconditions.checkArgument(pages > 0, WARNING_LOWER_THAN_ZERO);
         this.pages = pages;
     }
 
@@ -117,6 +128,7 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
+        Preconditions.checkNotEmpty(isbn, WARNING_EMPTY);
         this.isbn = isbn;
     }
 
@@ -124,6 +136,8 @@ public class Book {
         return this.isbn;
     }
 
-    public int getId() { return this.id; }
+    public int getId() {
+        return this.id;
+    }
 
 }
