@@ -7,7 +7,7 @@ import org.springframework.data.repository.*;
 
 import java.util.Optional;
 
-public interface BookRepository extends CrudRepository<Book, Integer> {
+public interface BookRepository extends PagingAndSortingRepository<Book, Integer> {
 
     Page<Book> findAll(Pageable pageable);
 
