@@ -7,7 +7,7 @@ import org.springframework.data.repository.*;
 
 import java.time.LocalDate;
 
-public interface UserRepository extends CrudRepository<User, Integer> {
+public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
 
     Page<User> findAll(Pageable pageable);
 
